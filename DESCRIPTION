@@ -1,0 +1,28 @@
+Package: EIVICC
+Title: Modular Time Series Plotting with Plotly and Enhancements
+Version: 0.0.0.9000
+Authors@R: 
+    person("Gerard", "Grande", email = "ggrande@ari.ad", role = c("aut", "cre"))
+Description: Provides modular tools to construct and enhance time series plots using plotly. 
+    Includes support for conditional coloring, moving averages, trend lines, and vertical year markers 
+    in a composable pipeline style.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    plotly,
+    dplyr,
+    rlang,
+    zoo,
+    purrr,
+    lubridate,
+    rlang,
+    trend,
+    patchwork,
+    zoo,
+    ggplot2,
+    magrittr
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
