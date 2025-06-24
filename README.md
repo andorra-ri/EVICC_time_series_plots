@@ -7,7 +7,7 @@ This project provides a flexible way to generate time series plots from a CSV fi
 Install package:
 
 ```r
-#devtools::install_github("andorra-ri/EVICC_time_series_plots", auth_token = "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", force = TRUE)
+devtools::install_github("andorra-ri/EVICC_time_series_plots", auth_token = "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", force = TRUE)
 ```
 
 The main script to run is:
@@ -93,21 +93,10 @@ general_title	string	Title displayed above the full plot layout (can be empty)
 📈 Plot Configuration
 The plots list defines each individual plot. Each element is keyed by the variable name you want to visualize (e.g., "anomalies", "iqr").
 
-Each plot accepts the following parameters:
-
-Parameter	Type	Description
-title	string	Plot title
-plot_type	string	Plot type: "line" or "bar"
-color_per_value_var	logical	Use color coding by value sign (TRUE = positive/negative colors)
-xlab	string	X-axis label ("" to omit)
-ylab	string	Y-axis label
-yrange	NULL or numeric vector	Y-axis range: NULL = auto / c(min, max)
-row	integer or NULL	Row position in layout grid (NULL to auto-place)
 
 Example
-r
-Copy
-Edit
+
+```r
 plots = list(
   anomalies = list(
     title = "Anomalies",
@@ -128,13 +117,14 @@ plots = list(
     row = 2
   )
 )
+```
 ▶️ Running the Code
 Once input_parameters is set up, call:
 
-r
-Copy
-Edit
+```r
 plot_ts_data(input_parameters)
+```
+
 This will generate one or more plots based on the configuration.
 
 📝 Notes
@@ -146,25 +136,14 @@ This setup supports extensibility by adding more plots to the plots list.
 
 📂 Project Structure
 kotlin
-Copy
-Edit
-.
+
 ├── data/
 │   └── indicadors_hidric.csv
 ├── scripts/
 │   └── plot_ts_data.R
 ├── README.md
 └── your_project.Rproj
+
 📄 License
+
 MIT License
-
-yaml
-Copy
-Edit
-
----
-
-Let me know if you want to add:
-- Sample image of the output plots.
-- Instructions for installing required R packages.
-- Integration with `targets`, `renv`, or RMarkdown.
