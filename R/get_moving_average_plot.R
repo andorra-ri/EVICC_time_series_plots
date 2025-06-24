@@ -91,10 +91,10 @@ add_moving_average_plot <- function(p, moving_avg, df, time_var, value_var, k_ma
       add_trace(
         x = df[[time_var]],
         y = df$moving_avg,
-        name = paste0(k_ma, "-MA"),
+        name = "Moving average",
         type = "scatter",
         mode = "lines",
-        line = list(color = color, dash = "dash"),
+        line = list(color = color, dash = "solid", width = 0.8),
         showlegend = FALSE
       )
 

@@ -1,90 +1,53 @@
 devtools::load_all()  # Loads all functions from R/ like a package
 
-library(plotly)
-library(dplyr)
-library(zoo)
-library(lubridate)
-library(trend)
-library(patchwork)
-
 if (interactive()){
 
   input_parameters <- list(
-    # Path to the CSV file containing the input time series data.
-    # Use forward slashes or file.path() to ensure cross-platform compatibility.
-    csv_pathfile = "./data/indicadors_hidric.csv",
+    # File settings
+    csv_pathfile            = file.path("data", "indicadors_hidric.csv"),   # (string) Path to the input CSV file
+    csv_sep                 = ";",                                          # (string) Field delimiter: ";" / "," / "\t" / etc.
 
-    csv_sep = ";",
+    # Time variable
+    time_var                = "date2",                                      # (string) Column name for the time variable (avoid names like "data")
 
-    # Name of the column representing time (e.g., "mes", "date", "year_month").
-    time_var = "date2",
+    # Data grouping
+    annual_values_by_month  = FALSE,                                        # (logical) TRUE = group annually by month, FALSE = don't group
 
-    # Title to display at the top of the combined plot (can be left empty).
-    general_title = "",
+    # General settings
+    general_title           = "",                                           # (string) Title for the entire plot layout; "" for no title
+    vertical_lines_year     = TRUE,                                         # (logical) TRUE = add vertical year lines, FALSE = don't
+    moving_avg              = TRUE,                                         # (logical) TRUE = apply moving average, FALSE = raw data
+    k_ma                    = 6,                                            # (integer) Number of periods for moving average (e.g., 6, 12)
+    trend                   = TRUE,                                         # (logical) TRUE = add trend line, FALSE = omit
 
-    # Optional variable name used to group multiple plots (e.g., by region or category).
-    # Set to NULL if plots are not grouped.
-    grouped_plot_by_var = "month_name",
-
-    grouped_plot_x_var = "year",
-
-    # Logical: Add vertical lines at each new year on the x-axis.
-    vertical_lines_year = TRUE,
-
-    # Logical: Apply a moving average smoothing to the data.
-    moving_avg = TRUE,
-
-    # Integer: Number of periods used for the moving average (e.g., 6 = half-year).
-    k_ma = 6,
-
-    # Logical: Add a trend line to each plot (e.g., linear regression).
-    trend = TRUE,
-
-    # List of individual plots to generate, keyed by their internal plot name.
+    # Plot configurations
+    # Use the variable name you wish to plot as the key in the 'plots' list.
+    # Examples: anomalies, iqr, etc.
     plots = list(
-      # Plot 1: Anomalies
       anomalies = list(
-        # Name of the column in the data containing values to plot.
-        value_var = "anomalies",
-        # Title of the plot (leave empty to auto-generate or omit).
-        title = "anomalies",
-        # Type of plot: "bar", "line", etc.
-        plot_type = "bar",
-        # Logical: Use different colors for positive vs negative values.
-        color_per_value_var = TRUE,
-        # X-axis label.
-        xlab = "",
-        # Y-axis label.
-        ylab = "%",
-        # Y-axis limits (e.g., seq(0, 600, 100)), or NULL for auto-scaling.
-        yrange = NULL,
-        # Row in the subplot grid (e.g., 1 for top row). NULL lets the system auto-place it.
-        row = 1
+        title               = "Anomalies",                                  # (string) Plot title
+        plot_type           = "line",                                       # (string) Plot type: "line" / "bar"
+        color_per_value_var = TRUE,                                         # (logical) TRUE = color based on value sign, FALSE = single color
+        xlab                = "",                                           # (string) X-axis label; "" to omit
+        ylab                = "%",                                          # (string) Y-axis label
+        yrange              = NULL,                                         # (NULL or numeric vector) Y-axis range: NULL = auto / e.g., c(0, 100)
+        row                 = 1                                             # (integer or NULL) Layout row position; NULL = auto
       ),
+
       iqr = list(
-        # Name of the column in the data containing values to plot.
-        value_var = "iqr",
-        # Title of the plot (leave empty to auto-generate or omit).
-        title = "iqrr",
-        # Type of plot: "bar", "line", etc.
-        plot_type = "bar",
-        # Logical: Use different colors for positive vs negative values.
-        color_per_value_var = TRUE,
-        # X-axis label.
-        xlab = "",
-        # Y-axis label.
-        ylab = "%",
-        # Y-axis limits (e.g., seq(0, 600, 100)), or NULL for auto-scaling.
-        yrange = NULL,
-        # Row in the subplot grid (e.g., 1 for top row). NULL lets the system auto-place it.
-        row = 2
+        title               = "iqr",                                        # (string) Plot title
+        plot_type           = "line",                                       # (string) Plot type: "line" / "bar"
+        color_per_value_var = TRUE,                                         # (logical) TRUE = color based on value sign, FALSE = single color
+        xlab                = "",                                           # (string) X-axis label; "" to omit
+        ylab                = "%",                                          # (string) Y-axis label
+        yrange              = NULL,                                         # (NULL or numeric vector) Y-axis range: NULL = auto / e.g., c(0, 100)
+        row                 = 2                                             # (integer or NULL) Layout row position; NULL = auto
       )
-
+    )
   )
-  )
 
-  #get_grouped_facet_plot(data = data, time_var = input_parameters$time_var, value_var =  input_parameters$value_var, group_var = input_parameters$grouped_plot_by_var, vertical_lines_year = input_parameters$vertical_lines_year, dict_color = dict_color)
   plot_ts_data(input_parameters)
+
 }
 
 

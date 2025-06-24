@@ -38,9 +38,9 @@ plot_ts_data <- function(input_parameters) {
 
     global <- schema$global
     plots_cfg <- schema$plots
-    has_group <- !is.null(global$grouped_plot_by_var)
+    annual_values_by_month <- global$annual_values_by_month
 
-    if (!has_group) {
+    if (!annual_values_by_month) {
       # Handle single or multi-variable non-grouped plots
       list_args <- build_all_plot_inputs(df, schema)
 
@@ -50,8 +50,10 @@ plot_ts_data <- function(input_parameters) {
         p <- do.call(get_unique_plot, list_args[[1]])  # Single plot
       }
 
+      p <- set_last_window_view(p, df, global$time_var)
+
     } else {
-      # Handle grouped/faceted plots
+      # Handle grouped plots by month_name
       p <- lapply(names(plots_cfg), function(var_name) {
         var_cfg <- plots_cfg[[var_name]]
 
@@ -59,9 +61,9 @@ plot_ts_data <- function(input_parameters) {
           df = df,
           time_var = global$time_var,
           value_var = var_cfg$value_var,
-          x_var = global$grouped_plot_x_var,
-          group_var = global$grouped_plot_by_var,
-          vertical_lines_year = global$vertical_lines_year,
+          x_var = "year",
+          group_var = "month_name",
+          trend_line = global$trend,
           xlab = var_cfg$xlab,
           ylab = var_cfg$ylab,
           title = var_cfg$title,

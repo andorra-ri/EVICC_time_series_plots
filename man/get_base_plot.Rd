@@ -10,7 +10,8 @@ get_base_plot(
   value_var,
   plot_type = c("line", "bar"),
   color_per_value_var = FALSE,
-  dict_color = dict_color
+  dict_color = dict_color,
+  ylabel = ylabel
 )
 }
 \arguments{

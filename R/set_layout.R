@@ -83,7 +83,7 @@ set_layout <- function(title, xlab, ylab, xrange, yrange, row) {
         list(dtickrange = list(NULL, 24 * 60 * 60 * 1000), value = "%H:%M\n%d %m"),
         list(dtickrange = list(24 * 60 * 60 * 1000, 7 * 24 * 60 * 60 * 1000), value = "%d %b"),
         list(dtickrange = list(7 * 24 * 60 * 60 * 1000, "M1"), value = "%b-%Y"),
-        list(dtickrange = list("M1", NULL), value = "%b %Y")
+        list(dtickrange = list("M1", NULL), value = "%Y")
       )
     }
 
@@ -153,6 +153,7 @@ set_layout <- function(title, xlab, ylab, xrange, yrange, row) {
         yaxis$tickvals <- yrange
       }
     }
+
 
     return(list(annotations, xaxis, yaxis))
 

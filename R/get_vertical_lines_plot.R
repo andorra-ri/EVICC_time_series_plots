@@ -58,19 +58,21 @@ add_vertical_year_lines <- function(p,
     }
 
     # Add vertical lines in a single plotly trace
-    p <- p %>%
-      add_segments(
-        x = x_values,
-        xend = x_values,
-        y = rep(y_min, length(x_values)),
-        yend = rep(y_max, length(x_values)),
-        line = list(
-          color = color,
-          dash = "lines",
-          width = gridwidth + 0.1
-        ),
-        showlegend = FALSE
-      )
+    for (x in x_values){
+      p <- p %>%
+        add_segments(
+          x = x_values,
+          xend = x_values,
+          y = rep(y_min, length(x_values)),
+          yend = rep(y_max, length(x_values)),
+          line = list(
+            color = color,
+            dash = "lines",
+            width = gridwidth + 0.1
+          ),
+          showlegend = FALSE
+        )
+    }
 
     return(p)
 

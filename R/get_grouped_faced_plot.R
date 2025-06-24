@@ -10,7 +10,7 @@
 #' @param value_var Character; name of the numeric value variable.
 #' @param x_var Character; variable for x-axis (usually time_var).
 #' @param group_var Character; name of the categorical grouping variable (e.g., "month").
-#' @param vertical_lines_year Logical; if TRUE, include vertical lines (unused in code currently).
+#' @param trend_line Logical; if TRUE, include trend lines per group.
 #' @param xlab Character; label for the x-axis.
 #' @param ylab Character; label for the y-axis.
 #' @param title Character; main title of the plot.
@@ -30,8 +30,12 @@
 #'                        x_var = "year", group_var = "month",
 #'                        xlab = "Year", ylab = "Sales", title = "Monthly Sales",
 #'                        yrange = c(0, 100))
+
+
+
+
 get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
-                                   vertical_lines_year = TRUE, xlab, ylab, title, yrange) {
+                                   trend_line, xlab, ylab, title, yrange) {
   tryCatch({
 
     # Convert variable names to symbols for tidy evaluation
@@ -57,25 +61,48 @@ get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
     group_avg[[group_var]] <- factor(group_avg[[group_var]], levels = month_levels)
 
     # Define axis tick sequence
-    seq_vector <- seq(min(df[[x_var]], na.rm = TRUE), max(df[[x_var]], na.rm = TRUE), by = 1)
+    seq_vector <- seq(min(df[[x_var]], na.rm = TRUE), max(df[[x_var]], na.rm = TRUE), by = (max(df[[x_var]], na.rm = TRUE)-min(df[[x_var]], na.rm = TRUE)))
 
-    # Build base ggplot with line and point layers
+    # Build base ggplot with line, point, and trend line layers
     p <- ggplot2::ggplot(df, ggplot2::aes(x = !!x_sym, y = !!value_sym, group = !!group_sym)) +
-      ggplot2::geom_line(size = 1, show.legend = FALSE, color = dict_color[["main_color"]]) +
+      ggplot2::geom_line(size = 0.3, show.legend = FALSE, color = dict_color[["main_color"]]) +   # thinner lines
       ggplot2::geom_point(size = 1, show.legend = FALSE, color = dict_color[["main_color"]]) +
-      ggplot2::geom_hline(data = group_avg, ggplot2::aes(yintercept = .data[["avg_val"]]),
-                          color = dict_color[["hline"]], linetype = "dashed",
-                          size = 0.5, inherit.aes = FALSE) +
-      ggplot2::facet_wrap(stats::as.formula(paste("~", group_var)),
-                          nrow = 1, scales = "fixed") +
-      ggplot2::scale_x_continuous(breaks = seq_vector) +
+
+      ggplot2::geom_hline(
+        data = group_avg,
+        ggplot2::aes(yintercept = .data[["avg_val"]]),
+        color = dict_color[["hline"]],
+        linetype = "dashed",
+        size = 0.3,
+        inherit.aes = FALSE
+      ) +
+      ggplot2::facet_wrap(
+        stats::as.formula(paste("~", group_var)),
+        nrow = 1, scales = "fixed"
+      ) +
+      # ggplot2::scale_x_continuous(breaks = seq_vector) +  # optional
       ggplot2::theme(
         axis.text.x = ggplot2::element_blank(),
         axis.ticks.x = ggplot2::element_blank(),
         axis.title.x = ggplot2::element_blank(),
         axis.title.y = ggplot2::element_blank(),
-        panel.grid.major.x = ggplot2::element_line(color = dict_color[["grid_lines_color"]])
+        panel.background = ggplot2::element_rect(fill = "white", color = NA),
+        plot.background = ggplot2::element_rect(fill = "white", color = NA),
+        strip.background = ggplot2::element_rect(fill = "white", color = NA)
       )
+
+
+    if (trend_line){
+
+      p <- p + ggplot2::stat_smooth(
+        method = "lm",
+        se = FALSE,
+        linetype = "dotted",
+        size = 0.2,
+        color = dict_color[["trend_line_color"]],
+        show.legend = FALSE
+      )
+    }
 
     # Create custom layout (titles, labels, axis limits)
     layout_plotly_obj <- set_layout(
@@ -94,6 +121,7 @@ get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
 
     # Convert ggplot to plotly and apply layout
     p <- plotly::ggplotly(p)
+
     p <- plotly::layout(p, annotations = annotations, yaxis = yaxis)
 
     return(p)

@@ -53,7 +53,8 @@ get_unique_plot <- function(df,
       value_var,
       plot_type,
       color_per_value_var,
-      dict_color = dict_color
+      dict_color = dict_color,
+      ylabel = ylab
     )
 
     # Step 2: Create list of transformation functions (pipeline)
@@ -82,6 +83,7 @@ get_unique_plot <- function(df,
       row = row
     )
 
+
     # Step 4: Apply layout (annotations and axes)
     annotations <- layout_plotly_obj[[1]]
     xaxis <- layout_plotly_obj[[2]]
@@ -90,6 +92,10 @@ get_unique_plot <- function(df,
 
     # Step 5: Apply all pipeline transformations
     final_plot <- apply_plot_pipeline(p, pipeline)
+
+
+    #final_plot <- set_last_window_view(final_plot, df, time_var)
+
 
     return(final_plot)
 

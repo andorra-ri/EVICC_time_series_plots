@@ -39,7 +39,8 @@ get_base_plot <- function(df,
                           value_var,
                           plot_type = c("line", "bar"),
                           color_per_value_var = FALSE,
-                          dict_color = dict_color) {
+                          dict_color = dict_color,
+                          ylabel = ylabel) {
   tryCatch({
 
     plot_type <- match.arg(plot_type)
@@ -76,22 +77,135 @@ get_base_plot <- function(df,
     p <- plot_ly(data = df, x = ~.data[[time_var]])
 
     # Add the appropriate trace type
-    if (plot_type == "line") {
+
+    if (plot_type == "line" && color_per_value_var) {
+      for (i in seq_len(nrow(df) - 1)) {
+        x1 <- df[[time_var]][i]
+        x2 <- df[[time_var]][i + 1]
+        y1 <- df[[value_var]][i]
+        y2 <- df[[value_var]][i + 1]
+
+        # Check if it crosses y=0
+        if ((y1 >= 0 && y2 < 0) || (y1 < 0 && y2 >= 0)) {
+          # Interpolate crossing at y=0
+          t <- y1 / (y1 - y2)
+          x_cross <- as.numeric(x1) + t * (as.numeric(x2) - as.numeric(x1))
+          x_cross <- as.POSIXct(x_cross, origin = "1970-01-01")  # convert to date if time axis
+
+          # First segment
+          segment_color1 <- ifelse(y1 >= 0,
+                                   dict_color[["positive_value_color"]],
+                                   dict_color[["negative_value_color"]])
+
+          p <- p %>%
+            add_trace(
+              x = c(x1, x_cross),
+              y = c(y1, 0),
+              name = value_var,
+              type = "scatter",
+              mode = "lines",
+              line = list(color = segment_color1),
+              hovertemplate = paste0(
+                "date: %{x}<br>",
+                value_var, ": %{y:.2f}", ylabel,
+                "<extra></extra>"
+              ),
+              showlegend = FALSE
+            )
+
+          # Second segment
+          segment_color2 <- ifelse(y2 >= 0,
+                                   dict_color[["positive_value_color"]],
+                                   dict_color[["negative_value_color"]])
+
+          p <- p %>%
+            add_trace(
+              x = c(x_cross, x2),
+              y = c(0, y2),
+              name = value_var,
+              type = "scatter",
+              mode = "lines",
+              line = list(color = segment_color2),
+              hovertemplate = paste0(
+                "date: %{x}<br>",
+                value_var, ": %{y:.2f}", ylabel,
+                "<extra></extra>"
+              ),
+              showlegend = FALSE
+            )
+        } else {
+          # Same sign — plot directly
+          segment_color <- ifelse(y1 >= 0,
+                                  dict_color[["positive_value_color"]],
+                                  dict_color[["negative_value_color"]])
+
+          p <- p %>%
+            add_trace(
+              x = c(x1, x2),
+              y = c(y1, y2),
+              name = value_var,
+              type = "scatter",
+              mode = "lines",
+              line = list(color = segment_color),
+              hovertemplate = paste0(
+                "date: %{x}<br>",
+                value_var, ": %{y:.2f}", ylabel,
+                "<extra></extra>"
+              ),
+              showlegend = FALSE
+            )
+        }
+      }
+
+      # Add markers separately — corrected hovertemplate placement
+      p <- p %>%
+        add_trace(
+          x = df[[time_var]],
+          y = df[[value_var]],
+          name = value_var,
+          type = "scatter",
+          mode = "markers",
+          marker = list(
+            size = 4,
+            color = ifelse(df[[value_var]] >= 0,
+                           dict_color[["positive_value_color"]],
+                           dict_color[["negative_value_color"]])
+          ),
+          hovertemplate = paste0(
+            "date: %{x}<br>",
+            value_var, ": %{y:.2f}", ylabel,
+            "<extra></extra>"
+          ),
+          showlegend = FALSE
+        )
+
+    }else if (plot_type == "line") {
       p <- p %>%
         add_trace(
           y = df[[value_var]],
-          name = "Value",
-          type = "scatter", mode = "lines+markers",
+          name = value_var,
+          type = "scatter",
+          mode = "lines+markers",
           line = list(color = plot_color),
           marker = list(size = 4, color = plot_color),
+          hovertemplate = paste0(
+            "date: %{x}<br>",
+            value_var, ": ", sprintf("%.2f", df[[value_var]]), ylabel,
+            "<extra></extra>"
+          ),
           showlegend = FALSE
         )
     } else if (plot_type == "bar") {
       p <- p %>%
         add_bars(
           y = df[[value_var]],
-          name = "Value",
+          name = value_var,
           marker = list(color = plot_color),
+          hovertemplate = paste0(
+            "date: %{x}<br>",
+            value_var, ": ", sprintf("%.2f", df[[value_var]]), ylabel,
+            "<extra></extra>"
+          ),
           showlegend = FALSE
         )
     }

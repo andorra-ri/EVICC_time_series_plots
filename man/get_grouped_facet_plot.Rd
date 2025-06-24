@@ -10,7 +10,7 @@ get_grouped_facet_plot(
   value_var,
   x_var,
   group_var,
-  vertical_lines_year = TRUE,
+  trend_line,
   xlab,
   ylab,
   title,
@@ -28,7 +28,7 @@ get_grouped_facet_plot(
 
 \item{group_var}{Character; name of the categorical grouping variable (e.g., "month").}
 
-\item{vertical_lines_year}{Logical; if TRUE, include vertical lines (unused in code currently).}
+\item{trend_line}{Logical; if TRUE, include trend lines per group.}
 
 \item{xlab}{Character; label for the x-axis.}
 

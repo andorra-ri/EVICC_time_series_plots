@@ -32,7 +32,7 @@ generate_plot_schema <- function(input_parameters) {
       cfg <- plot_config_list[[var_name]]
 
       per_var_list[[var_name]] <- list(
-        value_var = cfg$value_var,
+        value_var = var_name,
         plot_type = cfg$plot_type,
         xlab = if (is.null(cfg$xlab) || trimws(cfg$xlab) == "") NULL else cfg$xlab,
         ylab = if (is.null(cfg$ylab) || trimws(cfg$ylab) == "") NULL else cfg$ylab,
@@ -58,8 +58,7 @@ generate_plot_schema <- function(input_parameters) {
         } else {
           input_parameters$general_title
         },
-        grouped_plot_by_var = input_parameters$grouped_plot_by_var,
-        grouped_plot_x_var = input_parameters$grouped_plot_x_var,
+        annual_values_by_month = input_parameters$annual_values_by_month,
         dict_color = input_parameters$dict_color,
         k_ma = input_parameters$k_ma,
         vertical_lines_year = input_parameters$vertical_lines_year,
