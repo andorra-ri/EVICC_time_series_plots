@@ -66,33 +66,64 @@ plot_ts_data(input_parameters)
 
 Where input_parameters is a list defining all necessary configurations for data input and visualization.
 
-📥 Input Parameters
-Below is a breakdown of the fields used in the input_parameters list:
+## 📥 Input Parameters
 
-📁 File Settings
-Parameter	Type	Description
-csv_pathfile	string	Path to the input CSV file (e.g., "data/indicadors_hidric.csv")
-csv_sep	string	Field delimiter: ";", ",", "\t", etc.
+Below is a breakdown of the fields used in the `input_parameters` list:
 
-🕒 Time Variable
-Parameter	Type	Description
-time_var	string	Name of the column representing time (avoid "data")
+---
 
-📊 Data Grouping and Transformation
-Parameter	Type	Description
-annual_values_by_month	logical	TRUE = group annual data by month, FALSE = no grouping
-moving_avg	logical	Apply moving average to smooth data
-k_ma	integer	Number of periods used in the moving average (e.g., 6, 12)
-trend	logical	Add a trend line to the plot (TRUE / FALSE)
-vertical_lines_year	logical	Show vertical lines at the start of each year
+### 📁 File Settings
 
-🖼️ General Plot Title
-Parameter	Type	Description
-general_title	string	Title displayed above the full plot layout (can be empty)
+| Parameter     | Type   | Description                                                  |
+|---------------|--------|--------------------------------------------------------------|
+| `csv_pathfile`| string | Path to the input CSV file (e.g., `"data/indicadors_hidric.csv"`) |
+| `csv_sep`     | string | Field delimiter: `";"`, `","`, `"\t"`, etc.                 |
 
-📈 Plot Configuration
-The plots list defines each individual plot. Each element is keyed by the variable name you want to visualize (e.g., "anomalies", "iqr").
+---
 
+### 🕒 Time Variable
+
+| Parameter   | Type   | Description                                         |
+|-------------|--------|-----------------------------------------------------|
+| `time_var`  | string | Name of the column representing time (avoid `"data"`) |
+
+---
+
+### 📊 Data Grouping and Transformation
+
+| Parameter              | Type     | Description                                                  |
+|------------------------|----------|--------------------------------------------------------------|
+| `annual_values_by_month` | logical | `TRUE` = group annual data by month, `FALSE` = no grouping |
+| `moving_avg`           | logical | Apply moving average to smooth data                          |
+| `k_ma`                 | integer | Number of periods used in the moving average (e.g., 6, 12)   |
+| `trend`                | logical | Add a trend line to the plot (`TRUE` / `FALSE`)              |
+| `vertical_lines_year`  | logical | Show vertical lines at the start of each year                |
+
+---
+
+### 🖼️ General Plot Title
+
+| Parameter       | Type   | Description                                               |
+|-----------------|--------|-----------------------------------------------------------|
+| `general_title` | string | Title displayed above the full plot layout (can be empty) |
+
+---
+
+### 📈 Plot Configuration
+
+The `plots` list defines each individual plot. Each element is keyed by the variable name you want to visualize (e.g., `"anomalies"`, `"iqr"`).
+
+Each plot supports the following parameters:
+
+| Parameter             | Type                   | Description                                                           |
+|-----------------------|------------------------|-----------------------------------------------------------------------|
+| `title`               | string                 | Plot title                                                            |
+| `plot_type`           | string                 | Plot type: `"line"` or `"bar"`                                       |
+| `color_per_value_var` | logical                | Use color coding by value sign (`TRUE` = positive/negative colors)   |
+| `xlab`                | string                 | X-axis label (`""` to omit)                                          |
+| `ylab`                | string                 | Y-axis label                                                          |
+| `yrange`              | NULL or numeric vector | Y-axis range: `NULL` = auto / e.g., `c(0, 100)`                      |
+| `row`                 | integer or NULL        | Row position in layout (`NULL` = auto-place)                         |
 
 Example
 
