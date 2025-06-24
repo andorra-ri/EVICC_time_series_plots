@@ -134,15 +134,7 @@ Variable names in plots must match columns in your dataset.
 
 This setup supports extensibility by adding more plots to the plots list.
 
-📂 Project Structure
-kotlin
-
-├── data/
-│   └── indicadors_hidric.csv
-├── scripts/
-│   └── plot_ts_data.R
-├── README.md
-└── your_project.Rproj
+<pre> ```text 📂 Project Structure ├── data/ │ └── indicadors_hidric.csv ├── scripts/ │ └── plot_ts_data.R ├── README.md └── your_project.Rproj ``` </pre>
 
 📄 License
 
