@@ -175,6 +175,7 @@ your-project/
 │   └── plot_ts_data.R
 ├── README.md
 └── your_project.Rproj
+```
 
 📄 License
 
