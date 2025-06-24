@@ -168,13 +168,13 @@ This setup supports extensibility by adding more plots to the plots list.
 ## 📂 Project Structure
 
 ```text
-your-project/
+EVICC/
 ├── data/
 │   └── indicadors_hidric.csv
 ├── scripts/
 │   └── plot_ts_data.R
 ├── README.md
-└── your_project.Rproj
+└── EVICC.Rproj
 ```
 
 📄 License
