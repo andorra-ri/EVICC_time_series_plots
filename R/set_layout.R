@@ -33,6 +33,7 @@ set_layout <- function(title, xlab, ylab, xrange, yrange, row) {
       stop(paste("Missing keys in dict_fontsize:", paste(missing_keys, collapse = ", ")))
     }
 
+
     # --- Create title annotation object ---
     annotations <- list(
       list(

@@ -35,7 +35,7 @@
 
 
 get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
-                                   trend_line, xlab, ylab, title, yrange) {
+                                   trend_line, xlab, ylab, title, general_title, yrange) {
   tryCatch({
 
     # Convert variable names to symbols for tidy evaluation
@@ -65,8 +65,8 @@ get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
 
     # Build base ggplot with line, point, and trend line layers
     p <- ggplot2::ggplot(df, ggplot2::aes(x = !!x_sym, y = !!value_sym, group = !!group_sym)) +
-      ggplot2::geom_line(size = 0.3, show.legend = FALSE, color = dict_color[["main_color"]]) +   # thinner lines
-      ggplot2::geom_point(size = 1, show.legend = FALSE, color = dict_color[["main_color"]]) +
+      ggplot2::geom_line(size = 1, show.legend = FALSE, color = dict_color[["main_color"]]) +   # thinner lines
+      ggplot2::geom_point(size = 2, show.legend = FALSE, color = dict_color[["main_color"]]) +
 
       ggplot2::geom_hline(
         data = group_avg,
@@ -121,6 +121,16 @@ get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
 
     # Convert ggplot to plotly and apply layout
     p <- plotly::ggplotly(p)
+
+    # Modify trace properties
+    for (i in seq_along(p$x$data)) {
+      if (!is.null(p$x$data[[i]]$mode) && grepl("lines", p$x$data[[i]]$mode)) {
+        p$x$data[[i]]$line$width <- dict_size$lines  # Set line width
+      }
+      if (!is.null(p$x$data[[i]]$mode) && grepl("markers", p$x$data[[i]]$mode)) {
+        p$x$data[[i]]$marker$size <- dict_size$markers-1.5  # Set marker size
+      }
+    }
 
     p <- plotly::layout(p, annotations = annotations, yaxis = yaxis)
 

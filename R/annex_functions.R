@@ -34,9 +34,9 @@ generate_plot_schema <- function(input_parameters) {
       per_var_list[[var_name]] <- list(
         value_var = var_name,
         plot_type = cfg$plot_type,
-        xlab = if (is.null(cfg$xlab) || trimws(cfg$xlab) == "") NULL else cfg$xlab,
-        ylab = if (is.null(cfg$ylab) || trimws(cfg$ylab) == "") NULL else cfg$ylab,
-        title = if (is.null(cfg$title) || trimws(cfg$title) == "") var_name else cfg$title,
+        xlab = if (is.null(cfg$xlab) || trimws(cfg$xlab) == "") "" else cfg$xlab,
+        ylab = if (is.null(cfg$ylab) || trimws(cfg$ylab) == "") "" else cfg$ylab,
+        title = if (is.null(cfg$title) || trimws(cfg$title) == "") "" else cfg$title,
         color_per_value_var = if (is.null(cfg$color_per_value_var)) TRUE else cfg$color_per_value_var,
         yrange = if (is.null(cfg$yrange) || (is.character(cfg$yrange) && all(trimws(cfg$yrange) == ""))) {
           rep(NA, 2)
@@ -54,7 +54,7 @@ generate_plot_schema <- function(input_parameters) {
         csv_sep = input_parameters$csv_sep,
         time_var = input_parameters$time_var,
         general_title = if (is.null(input_parameters$general_title) || trimws(input_parameters$general_title) == "") {
-          NULL
+          ""
         } else {
           input_parameters$general_title
         },
@@ -213,6 +213,13 @@ prepare_data_from_schema <- function(schema, verbose = FALSE) {
     }
   }
 
+  format_variable <- function(data, var_name){
+    # Round to 2 decimal places
+    data[[var_name]] <- round(data[[var_name]], 2)
+
+    return(data)
+  }
+
   tryCatch({
 
     # Retrieve file path and separator
@@ -308,6 +315,7 @@ build_plot_args <- function(df, global_parameters, var_parameters, extra = list(
       moving_avg = global_parameters$moving_avg,
       trend = global_parameters$trend,
       k_ma = global_parameters$k_ma,
+      general_title = global_parameters$general_title,
       title = var_parameters$title,
       xlab = var_parameters$xlab,
       ylab = var_parameters$ylab,
@@ -349,16 +357,13 @@ build_plot_args <- function(df, global_parameters, var_parameters, extra = list(
 #' }
 build_all_plot_inputs <- function(df, schema) {
   tryCatch({
-
-    # Extract global settings from schema
-    global_parameters <- schema$global
     input_parameters_list <- list()
 
     # Loop through each plot configuration
     for (var_name in names(schema$plots)) {
       input_parameters_list[[var_name]] <- build_plot_args(
         df = df,
-        global_parameters = global_parameters,
+        global_parameters = schema$global,
         var_parameters = schema$plots[[var_name]]
       )
     }

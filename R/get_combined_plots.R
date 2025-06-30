@@ -96,7 +96,7 @@ get_combined_plots <- function(list_args_variables) {
       title = list(
         text = list_args_variables[[names(list_args_variables)[[1]]]]$general_title,
         x = 0.5,
-        y = 1.05,
+        y = 1.10,
         font = list(
           size = dict_fontsize[["title"]],
           color = dict_color[["font_color"]],

@@ -67,6 +67,7 @@ plot_ts_data <- function(input_parameters) {
           xlab = var_cfg$xlab,
           ylab = var_cfg$ylab,
           title = var_cfg$title,
+          general_title = global$general_title,
           yrange = var_cfg$yrange
         )
         do.call(get_grouped_facet_plot, args)

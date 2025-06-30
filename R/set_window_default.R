@@ -20,16 +20,13 @@
 #' p
 #'
 set_last_window_view <- function(p, df, time_var) {
-  # Validate inputs
   stopifnot(is.data.frame(df))
   stopifnot(time_var %in% names(df))
   stopifnot(inherits(df[[time_var]], c("Date", "POSIXct", "POSIXt")))
 
-  # Calculate time window: last 10 years from max timestamp
   max_time <- max(df[[time_var]], na.rm = TRUE)
   min_view <- max_time - lubridate::years(10)
 
-  # Inject JavaScript via htmlwidgets::onRender to add a modebar button
   p <- htmlwidgets::onRender(
     p,
     sprintf(
@@ -39,8 +36,8 @@ set_last_window_view <- function(p, df, time_var) {
 
         var restoreButton = {
           name: 'Restore10Year',
-          icon: Plotly.Icons.home,  // You can replace this with a custom icon
-          title: 'Restore 10-Year View',
+          icon: Plotly.Icons.autoscale,  // Use any icon you prefer
+          title: 'Reset axes',
           click: function(gd) {
             Plotly.relayout(gd, {
               'xaxis.range': [%s, %s]
@@ -50,14 +47,16 @@ set_last_window_view <- function(p, df, time_var) {
 
         Plotly.newPlot(el.id, x.data, x.layout, {
           modeBarButtonsToAdd: [restoreButton],
-          displaylogo: false  // hides the Plotly logo
+          modeBarButtonsToRemove: ['resetScale2d', 'autoscale'],  // Remove both unwanted icons
+          displaylogo: false
         });
       }
       ",
-      as.numeric(as.POSIXct(min_view)) * 1000,  # milliseconds for JS timestamp
+      as.numeric(as.POSIXct(min_view)) * 1000,
       as.numeric(as.POSIXct(max_time)) * 1000
     )
   )
 
   return(p)
 }
+

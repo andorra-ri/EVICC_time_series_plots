@@ -66,6 +66,11 @@ add_trend_line <- function(p, trend, df, time_var, value_var,
         name = "Trend",
         mode = "lines",
         line = list(color = color, dash = "dot"),
+        hovertemplate = paste0(
+          "%{x}<br>",
+          "Moving average: %{y:.2f}",
+          "<extra></extra>"
+        ),
         showlegend = FALSE
       )
 

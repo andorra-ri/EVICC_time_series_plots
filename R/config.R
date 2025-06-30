@@ -24,3 +24,11 @@ dict_fontsize <- list(
 )
 #' @export
 gridwidth <- 0.005
+
+#' @export
+dict_size <- list(
+  lines = 1.5, #1.5
+  markers = 4.5#4
+)
+
+

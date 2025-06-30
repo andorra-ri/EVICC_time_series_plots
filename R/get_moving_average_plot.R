@@ -95,6 +95,11 @@ add_moving_average_plot <- function(p, moving_avg, df, time_var, value_var, k_ma
         type = "scatter",
         mode = "lines",
         line = list(color = color, dash = "solid", width = 0.8),
+        hovertemplate = paste0(
+          "%{x}<br>",
+          "Moving average: %{y:.2f}",
+          "<extra></extra>"
+        ),
         showlegend = FALSE
       )
 

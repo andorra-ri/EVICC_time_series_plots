@@ -29,23 +29,39 @@ if (interactive()){
         plot_type           = "line",                                       # (string) Plot type: "line" / "bar"
         color_per_value_var = TRUE,                                         # (logical) TRUE = color based on value sign, FALSE = single color
         xlab                = "",                                           # (string) X-axis label; "" to omit
-        ylab                = "%",                                          # (string) Y-axis label
-        yrange              = NULL,                                         # (NULL or numeric vector) Y-axis range: NULL = auto / e.g., c(0, 100)
+        ylab                = "",                                          # (string) Y-axis label
+        yrange              = seq(0, 100, 20),                                         # (NULL or numeric vector) Y-axis range: NULL = auto / e.g., c(0, 100)
         row                 = 1                                             # (integer or NULL) Layout row position; NULL = auto
       ),
-
       iqr = list(
-        title               = "iqr",                                        # (string) Plot title
+        title               = "IQR",                                  # (string) Plot title
         plot_type           = "line",                                       # (string) Plot type: "line" / "bar"
-        color_per_value_var = TRUE,                                         # (logical) TRUE = color based on value sign, FALSE = single color
+        color_per_value_var = FALSE,                                         # (logical) TRUE = color based on value sign, FALSE = single color
         xlab                = "",                                           # (string) X-axis label; "" to omit
-        ylab                = "%",                                          # (string) Y-axis label
-        yrange              = NULL,                                         # (NULL or numeric vector) Y-axis range: NULL = auto / e.g., c(0, 100)
-        row                 = 2                                             # (integer or NULL) Layout row position; NULL = auto
+        ylab                = "",                                          # (string) Y-axis label
+        yrange              = seq(0, 100, 20),                                         # (NULL or numeric vector) Y-axis range: NULL = auto / e.g., c(0, 100)
+        row                 = 1                                           # (integer or NULL) Layout row position; NULL = auto
+      ),
+      disponibilitat = list(
+        title               = "disponibilitat",                                  # (string) Plot title
+        plot_type           = "line",                                       # (string) Plot type: "line" / "bar"
+        color_per_value_var = FALSE,                                         # (logical) TRUE = color based on value sign, FALSE = single color
+        xlab                = "",                                           # (string) X-axis label; "" to omit
+        ylab                = "",                                          # (string) Y-axis label
+        yrange              = seq(0, 100, 20),                                         # (NULL or numeric vector) Y-axis range: NULL = auto / e.g., c(0, 100)
+        row                 = 2                                            # (integer or NULL) Layout row position; NULL = auto
+      ),
+      disponibilitat_mean = list(
+        title               = "disponibilitat_mean",                                  # (string) Plot title
+        plot_type           = "bar",                                       # (string) Plot type: "line" / "bar"
+        color_per_value_var = FALSE,                                         # (logical) TRUE = color based on value sign, FALSE = single color
+        xlab                = "",                                           # (string) X-axis label; "" to omit
+        ylab                = "",                                          # (string) Y-axis label
+        yrange              = seq(0, 100, 20),                                         # (NULL or numeric vector) Y-axis range: NULL = auto / e.g., c(0, 100)
+        row                 = 2                                           # (integer or NULL) Layout row position; NULL = auto
       )
-    )
   )
-
+)
   plot_ts_data(input_parameters)
 
 }
