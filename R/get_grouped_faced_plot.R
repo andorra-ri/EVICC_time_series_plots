@@ -32,42 +32,42 @@
 #'                        yrange = c(0, 100))
 
 
-
-
 get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
                                    trend_line, xlab, ylab, title, general_title, yrange) {
   tryCatch({
 
-    # Convert variable names to symbols for tidy evaluation
+    # Convert variable names to symbols
     time_sym  <- rlang::sym(time_var)
     value_sym <- rlang::sym(value_var)
     x_sym     <- rlang::sym(x_var)
     group_sym <- rlang::sym(group_var)
 
-    # Check required columns exist in dataframe
+    # Check for required columns
     required_cols <- c(time_var, value_var, x_var, group_var)
     if (!all(required_cols %in% names(df))) {
       stop("Missing required columns: ", paste(setdiff(required_cols, names(df)), collapse = ", "))
     }
 
-    # Compute group-level means for horizontal reference lines
+    # Create 'month_year' label for tooltip
+    df$tooltip_text <- paste0(df[[group_var]], " ", year(df[[time_var]]), "<br>", title, ": ", sprintf("%.2f", df[[value_var]]), ylab)
+
+    # Compute group means
     group_avg <- df %>%
       dplyr::group_by(!!group_sym) %>%
       dplyr::summarise(avg_val = mean(!!value_sym, na.rm = TRUE), .groups = "drop")
 
-    # Force consistent month order (if applicable)
+    # Force month order (optional)
     month_levels <- month.abb
     df[[group_var]] <- factor(df[[group_var]], levels = month_levels)
     group_avg[[group_var]] <- factor(group_avg[[group_var]], levels = month_levels)
 
-    # Define axis tick sequence
+    # x-axis ticks
     seq_vector <- seq(min(df[[x_var]], na.rm = TRUE), max(df[[x_var]], na.rm = TRUE), by = (max(df[[x_var]], na.rm = TRUE)-min(df[[x_var]], na.rm = TRUE)))
 
-    # Build base ggplot with line, point, and trend line layers
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = !!x_sym, y = !!value_sym, group = !!group_sym)) +
-      ggplot2::geom_line(size = 1, show.legend = FALSE, color = dict_color[["main_color"]]) +   # thinner lines
-      ggplot2::geom_point(size = 2, show.legend = FALSE, color = dict_color[["main_color"]]) +
-
+    # Base ggplot with tooltip
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = !!x_sym, y = !!value_sym, group = !!group_sym, text = tooltip_text)) +
+      ggplot2::geom_line(size = 0.3, show.legend = FALSE, color = dict_color[["main_color"]]) +
+      ggplot2::geom_point(size = 1, show.legend = FALSE, color = dict_color[["main_color"]]) +
       ggplot2::geom_hline(
         data = group_avg,
         ggplot2::aes(yintercept = .data[["avg_val"]]),
@@ -79,9 +79,18 @@ get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
       ggplot2::facet_wrap(
         stats::as.formula(paste("~", group_var)),
         nrow = 1, scales = "fixed"
-      ) +
-      # ggplot2::scale_x_continuous(breaks = seq_vector) +  # optional
-      ggplot2::theme(
+      )
+
+    if (!(length(yrange) == 2 && all(is.na(yrange))))  {
+      p <- p + ggplot2::scale_y_continuous(
+        limits = range(yrange, na.rm = TRUE),
+        breaks = yrange
+      )
+    }
+
+      p <- p + ggplot2::theme(
+        panel.spacing = ggplot2::unit(0.5, "lines"),  # spacing between panels
+        panel.border = ggplot2::element_rect(color = dict_color[["grid_lines_color"]], fill = NA, size = gridwidth + 0.3),  # this adds borders
         axis.text.x = ggplot2::element_blank(),
         axis.ticks.x = ggplot2::element_blank(),
         axis.title.x = ggplot2::element_blank(),
@@ -91,9 +100,7 @@ get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
         strip.background = ggplot2::element_rect(fill = "white", color = NA)
       )
 
-
-    if (trend_line){
-
+    if (trend_line) {
       p <- p + ggplot2::stat_smooth(
         method = "lm",
         se = FALSE,
@@ -104,7 +111,6 @@ get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
       )
     }
 
-    # Create custom layout (titles, labels, axis limits)
     layout_plotly_obj <- set_layout(
       title = title,
       xlab = xlab,
@@ -114,24 +120,12 @@ get_grouped_facet_plot <- function(df, time_var, value_var, x_var, group_var,
       row = 1
     )
 
-    # Adjust annotation positioning (fine-tuning title placement)
     annotations <- layout_plotly_obj[[1]]
-    annotations[[1]]$y <- 1.04
+    annotations[[1]]$y <- 1.03
     yaxis <- layout_plotly_obj[[3]]
 
-    # Convert ggplot to plotly and apply layout
-    p <- plotly::ggplotly(p)
-
-    # Modify trace properties
-    for (i in seq_along(p$x$data)) {
-      if (!is.null(p$x$data[[i]]$mode) && grepl("lines", p$x$data[[i]]$mode)) {
-        p$x$data[[i]]$line$width <- dict_size$lines  # Set line width
-      }
-      if (!is.null(p$x$data[[i]]$mode) && grepl("markers", p$x$data[[i]]$mode)) {
-        p$x$data[[i]]$marker$size <- dict_size$markers-1.5  # Set marker size
-      }
-    }
-
+    # 🎯 ggplotly with custom tooltip
+    p <- plotly::ggplotly(p, tooltip = "text")
     p <- plotly::layout(p, annotations = annotations, yaxis = yaxis)
 
     return(p)

@@ -40,7 +40,8 @@ get_base_plot <- function(df,
                           plot_type = c("line", "bar"),
                           color_per_value_var = FALSE,
                           dict_color = dict_color,
-                          ylabel = ylabel) {
+                          ylabel = ylabel,
+                          title = title) {
   tryCatch({
 
     plot_type <- match.arg(plot_type)
@@ -82,7 +83,7 @@ get_base_plot <- function(df,
       # Define hovertemplate once
       hovertemplate_common <- paste0(
         "%{x}<br>",
-        value_var, ": %{y:.2f}", ylabel,
+        title, ": %{y:.2f}", ylabel,
         "<extra></extra>"
       )
 
@@ -177,7 +178,7 @@ get_base_plot <- function(df,
           marker = list(size = dict_size$markers, color = plot_color),
           hovertemplate = paste0(
             "%{x}<br>",
-            value_var, ": ", "%{y:.2f}", ylabel,
+            title, ": ", "%{y:.2f}", ylabel,
             "<extra></extra>"
           ),
           showlegend = FALSE
@@ -191,7 +192,7 @@ get_base_plot <- function(df,
           marker = list(color = plot_color, width = dict_size$markers),
           hovertemplate = paste0(
             "%{x}<br>",
-            value_var, ": ", "%{y:.2f}", ylabel,
+            title, ": ", "%{y:.2f}", ylabel,
             "<extra></extra>"
           ),
           showlegend = FALSE

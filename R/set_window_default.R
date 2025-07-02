@@ -27,6 +27,9 @@ set_last_window_view <- function(p, df, time_var) {
   max_time <- max(df[[time_var]], na.rm = TRUE)
   min_view <- max_time - lubridate::years(10)
 
+  # Set initial view in the plot layout
+  p$x$layout$xaxis$range <- c(min_view, max_time)
+
   p <- htmlwidgets::onRender(
     p,
     sprintf(
@@ -34,9 +37,9 @@ set_last_window_view <- function(p, df, time_var) {
       function(el, x) {
         var Plotly = window.Plotly;
 
-        var restoreButton = {
-          name: 'Restore10Year',
-          icon: Plotly.Icons.autoscale,  // Use any icon you prefer
+        var restore10YearButton = {
+          name: 'Reset axes',
+          icon: Plotly.Icons.home,
           title: 'Reset axes',
           click: function(gd) {
             Plotly.relayout(gd, {
@@ -45,9 +48,21 @@ set_last_window_view <- function(p, df, time_var) {
           }
         };
 
+        var autoscaleButton = {
+          name: 'Autoscale',
+          icon: Plotly.Icons.autoscale,
+          title: 'Autoscale',
+          click: function(gd) {
+            Plotly.relayout(gd, {
+              'xaxis.autorange': true,
+              'yaxis.autorange': true
+            });
+          }
+        };
+
         Plotly.newPlot(el.id, x.data, x.layout, {
-          modeBarButtonsToAdd: [restoreButton],
-          modeBarButtonsToRemove: ['resetScale2d', 'autoscale'],  // Remove both unwanted icons
+          modeBarButtonsToAdd: [Reset axes, autoscaleButton],
+          modeBarButtonsToRemove: ['resetScale2d', 'autoscale', 'home'],
           displaylogo: false
         });
       }
@@ -59,4 +74,3 @@ set_last_window_view <- function(p, df, time_var) {
 
   return(p)
 }
-

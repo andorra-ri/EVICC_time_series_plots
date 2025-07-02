@@ -25,7 +25,7 @@
 #' add_trend_line(p, TRUE, df, "time", "value")
 
 add_trend_line <- function(p, trend, df, time_var, value_var,
-                           color = dict_color[["trend_line_color"]]) {
+                           color = dict_color[["trend_line_color"]], ylab) {
   tryCatch({
     if (!trend) return(p)
 
@@ -68,7 +68,7 @@ add_trend_line <- function(p, trend, df, time_var, value_var,
         line = list(color = color, dash = "dot"),
         hovertemplate = paste0(
           "%{x}<br>",
-          "Moving average: %{y:.2f}",
+          "Trend line: %{y:.2f}", ylab,
           "<extra></extra>"
         ),
         showlegend = FALSE

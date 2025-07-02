@@ -36,7 +36,7 @@ generate_plot_schema <- function(input_parameters) {
         plot_type = cfg$plot_type,
         xlab = if (is.null(cfg$xlab) || trimws(cfg$xlab) == "") "" else cfg$xlab,
         ylab = if (is.null(cfg$ylab) || trimws(cfg$ylab) == "") "" else cfg$ylab,
-        title = if (is.null(cfg$title) || trimws(cfg$title) == "") "" else cfg$title,
+        title = if (is.null(cfg$title) || trimws(cfg$title) == "") var_name else cfg$title,
         color_per_value_var = if (is.null(cfg$color_per_value_var)) TRUE else cfg$color_per_value_var,
         yrange = if (is.null(cfg$yrange) || (is.character(cfg$yrange) && all(trimws(cfg$yrange) == ""))) {
           rep(NA, 2)

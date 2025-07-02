@@ -69,7 +69,7 @@ compute_moving_average <- function(df, time_var, value_var, k_ma) {
 #' add_moving_average_plot(p, TRUE, df, "time", "value", 3)
 
 add_moving_average_plot <- function(p, moving_avg, df, time_var, value_var, k_ma,
-                                    color = dict_color[["moving_avg_color"]]) {
+                                    color = dict_color[["moving_avg_color"]], ylab) {
   tryCatch({
 
     if (!moving_avg) return(p)
@@ -97,7 +97,7 @@ add_moving_average_plot <- function(p, moving_avg, df, time_var, value_var, k_ma
         line = list(color = color, dash = "solid", width = 0.8),
         hovertemplate = paste0(
           "%{x}<br>",
-          "Moving average: %{y:.2f}",
+          "Moving average: %{y:.2f}", ylab,
           "<extra></extra>"
         ),
         showlegend = FALSE

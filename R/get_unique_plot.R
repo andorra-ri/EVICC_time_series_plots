@@ -55,18 +55,19 @@ get_unique_plot <- function(df,
       plot_type,
       color_per_value_var,
       dict_color = dict_color,
-      ylabel = ylab
+      ylabel = ylab,
+      title = title
     )
 
     # Step 2: Create list of transformation functions (pipeline)
     pipeline <- list(
       function(p) add_moving_average_plot(
         p, moving_avg, df, time_var, value_var, k_ma,
-        color = dict_color[["moving_avg_color"]]
+        color = dict_color[["moving_avg_color"]], ylab = ylab
       ),
       function(p) add_trend_line(
         p, trend, df, time_var, value_var,
-        color = dict_color[["trend_line_color"]]
+        color = dict_color[["trend_line_color"]], ylab = ylab
       ),
       function(p) add_vertical_year_lines(
         p, vertical_lines_year, df, time_var, value_var,
