@@ -7,7 +7,7 @@ This project provides a flexible way to generate time series plots from a CSV fi
 Install package:
 
 ```r
-devtools::install_github("andorra-ri/EVICC_time_series_plots", auth_token = "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", force = TRUE)
+devtools::install_github("andorra-ri/EVICC_time_series_plots", force = TRUE)
 ```
 
 The main script to run is:
